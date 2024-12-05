@@ -29,15 +29,15 @@ dataloader = DataLoader(tensordataset, batch_size=100, shuffle=True)
 class Model(nn.Module):
     def __init__(self, input_size, output_size):
         super(Model, self).__init__()
-        self.layer1 = nn.Linear(input_size, 64)
-        self.layer2 = nn.Linear(64, 128)
-        self.layer3 = nn.Linear(128, 258)
-        self.layer4 = nn.Linear(258, 128)
-        self.layer5 = nn.Linear(128, 64)
-        self.layer6 = nn.Linear(64, 32)
-        self.layer7 = nn.Linear(32, 8)
-        self.output_layer = nn.Linear(8, output_size)
-        self.ReLu = nn.ReLU()
+        self.layer1 = nn.Linear(input_size, 50)
+        self.layer2 = nn.Linear(50, 100)
+        self.layer3 = nn.Linear(100, 300)
+        self.layer4 = nn.Linear(300, 100)
+        self.layer5 = nn.Linear(100, 50)
+        # self.layer6 = nn.Linear(64, 32)
+        # self.layer7 = nn.Linear(32, 8)
+        self.output_layer = nn.Linear(50, output_size)
+        self.ReLu = nn.Sigmoid()
 
     def forward(self, x):
         x = self.layer1(x)
@@ -50,10 +50,10 @@ class Model(nn.Module):
         x = self.ReLu(x)
         x = self.layer5(x)
         x = self.ReLu(x)
-        x = self.layer6(x)
-        x = self.ReLu(x)
-        x = self.layer7(x)
-        x = self.ReLu(x)
+        # x = self.layer6(x)
+        # x = self.ReLu(x)
+        # x = self.layer7(x)
+        # x = self.ReLu(x)
         x = self.output_layer(x)
         return x
 
@@ -64,7 +64,7 @@ output_size = 1
 model = Model(input_size, output_size)
 
 criterion = torch.nn.MSELoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.3)
 
 epochs = 2000
 for epoch in range(epochs):
@@ -76,6 +76,6 @@ for epoch in range(epochs):
         loss.backward()
         optimizer.step()
         total_loss += loss.item()
-
-    print(f'Epoch [{epoch+1}/{epochs}], Loss: {total_loss / len(dataloader):.4f}')
+    if (epoch+1) % 200 == 0:
+        print(f'Epoch [{epoch+1}/{epochs}], Loss: {total_loss / len(dataloader):.4f}')
 
