@@ -31,12 +31,14 @@ dataset = df.copy()
 X = dataset.drop(columns=['quality']).values
 Y = dataset['quality'].values
 
+#라벨인코딩시 데이터가 0부터 시작하게 변환해줌.
 le = LabelEncoder()
 Y_trans = le.fit_transform(Y)
 Y_trans = torch.tensor(Y_trans, dtype= torch.int64)
 
 print(Y_trans)
 
+'''
 # StandardScaler 사용
 scaler = StandardScaler()
 scaler = MinMaxScaler()
@@ -67,9 +69,9 @@ train_dataset = TensorDataset(X_train, Y_train)
 valid_dataset = TensorDataset(X_valid, Y_valid)
 test_dataset = TensorDataset(X_test, Y_test)
 
-train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)
-valid_loader = DataLoader(valid_dataset, batch_size=16, shuffle=True)
-test_loader = DataLoader(test_dataset, batch_size=16, shuffle=True)
+train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
+valid_loader = DataLoader(valid_dataset, batch_size=8, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=8, shuffle=True)
 
 class classificationModel(nn.Module):
     def __init__(self, input_size, output_size):
@@ -104,7 +106,8 @@ output_size = len(le.classes_)
 model = classificationModel(input_size, output_size)
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+optimizer = optim.AdamW(model.parameters(), lr=0.0001)
+
 
 # 모델 훈련
 num_epochs = 1000
@@ -160,3 +163,13 @@ test_loss /= len(test_loader)
 accuracy = 100 * correct / total
 
 print(f"\nTest Loss: {test_loss:.4f}, Test Accuracy: {accuracy:.2f}%")
+
+# 손실 그래프 그리기
+plt.figure(figsize=(10, 5))
+plt.subplot(1, 2, 1)
+plt.plot(train_losses, label='Training loss')
+plt.plot(valid_losses, label='Validation loss')
+plt.title('Training and Validation Loss')
+plt.legend()            
+plt.show()
+'''
